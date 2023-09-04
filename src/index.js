@@ -12,13 +12,13 @@ const elements = {
   container: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.load-more'),
 };
-// let gallery = new SimpleLightbox(elements.container);
-// let lightbox = new SimpleLightbox('.photo-card', { /* options */ });
 
 elements.form.addEventListener('submit', handlerSearch);
 elements.btnLoadMore.addEventListener("click", onLoad);
 
 let currentPage = 1;
+let box = new SimpleLightbox('.photo-card a');
+elements.btnLoadMore.classList.add("load-more-hidden");
 
 function handlerSearch(evt) {
   evt.preventDefault();
@@ -26,7 +26,11 @@ function handlerSearch(evt) {
   const input = elements.form.elements.searchQuery.value;
   localStorage.setItem("serchWord", input);
   searchGet(input)
-  .then(result => elements.container.insertAdjacentHTML('beforeend', createMarkUp(result)))
+  .then(result => {elements.container.insertAdjacentHTML('beforeend', createMarkUp(result)); box.refresh();
+  // if(resp.data.totalHits>resp.data.hits){
+  //   // elements.btnLoadMore.classList.("load-more-hidden");
+  // }
+})
   .catch(err => console.log(err));
 }
 
@@ -34,11 +38,11 @@ function onLoad(){
   currentPage += 1;
   let word = localStorage.getItem("serchWord");
   searchGet(word, currentPage)
-  .then(result => elements.container.insertAdjacentHTML('beforeend', createMarkUp(result)))
+  .then(result => {elements.container.insertAdjacentHTML('beforeend', createMarkUp(result)); box.refresh();})
   .catch(err => console.log(err));
 }
 
-let box = new SimpleLightbox('.photo-card a');
+
 
 async function searchGet(word, page=1) {
   const params = new URLSearchParams({
@@ -51,11 +55,11 @@ async function searchGet(word, page=1) {
   });
   try {
     const resp = await axios.get(`${baseURL}?${params}&page=${page}`);
-    console.log(resp.data.totalHits)
+    console.log(resp.data.total)
     const arrPhoto = resp.data.hits;
     console.log(arrPhoto);
     if (arrPhoto.length) {
-      const total = resp.data.totalHits;
+      const total = resp.data.total;
       Notify.success(
         `Hooray! We found ${total} images.`
       );
@@ -101,6 +105,4 @@ const markUp = arr
     )
     .join('');
     return markUp;
-  
-  box.refresh();
 }

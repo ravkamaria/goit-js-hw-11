@@ -1,6 +1,17 @@
 @import './common';
 @import './example';
 
+.header{
+    padding-top: 20px;
+    height: 60px;
+    background-color: #2494a5;
+}
+
+// .search-form{
+//     // display:;
+// justify-content:space-around;
+// }
+
 img{
     width: 300px;
     height: 200px;
@@ -10,4 +21,17 @@ img{
 .gallery{
     display: flex;
     flex-wrap: wrap;
+}
+
+.load-more{
+    display: block;
+    background-color: #4a6dce;
+    border: 2px solid #fff;
+    color: #fff;
+    width: 130px;
+    height: 30px;
+}
+
+.load-more-hidden{
+    display: none;
 }
